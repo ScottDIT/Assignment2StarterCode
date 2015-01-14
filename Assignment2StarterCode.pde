@@ -12,8 +12,9 @@ boolean[] keys = new boolean[526];
 void setup()
 {
   size(500, 500);
-  setUpPlayerControllers();
   allobjects.add(new Background(1000,500,"background.jpg")); //Calling backgroud class
+  setUpPlayerControllers();
+  
 }
 
 void draw()

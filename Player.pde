@@ -80,6 +80,8 @@ class Player extends GameObject
   
   void display()
   {      
+    fill(1,0,0);
+    rect(pos.x, pos.y, w, h);
     image(img,pos.x, pos.y, w, h);
   }  
 }
