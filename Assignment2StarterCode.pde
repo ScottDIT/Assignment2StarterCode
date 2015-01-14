@@ -6,21 +6,23 @@
     See: https://github.com/skooter500/DT228-OOP 
 */
 
-ArrayList<Player> players = new ArrayList<Player>();
+ArrayList<GameObject> allobjects = new ArrayList<GameObject>(); //Arraylist of game objects
 boolean[] keys = new boolean[526];
 
 void setup()
 {
-  size(600, 600);
+  size(500, 500);
   setUpPlayerControllers();
+  allobjects.add(new Background(1000,500,"background.jpg")); //Calling backgroud class
 }
 
 void draw()
 {
-  for(Player player:players)
+
+  for(GameObject eachobject:allobjects) // For all objects each object can now be added
   {
-    player.update();
-    player.display();
+    eachobject.update();
+    eachobject.display();
   }
 }
 
@@ -73,11 +75,11 @@ void setUpPlayerControllers()
     XML playerXML = children[i];
     Player p = new Player(
             i
-            , color(random(0, 255), random(0, 255), random(0, 255))
+            , "helicopter.png"
             , playerXML);
     int x = (i + 1) * gap;
     p.pos.x = x;
     p.pos.y = 300;
-   players.add(p);         
+   allobjects.add(p);         
   }
 }
