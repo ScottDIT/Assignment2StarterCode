@@ -8,9 +8,9 @@ class GameObject
 
   GameObject() //Constructor method
   {
-    w=100.0f;
-    h=50.0f;
-    speed = 1.0f;
+    w=60.0f;
+    h=30.0f;
+    speed = 3.0f;
     theta=0.0f;
     alive = true;
     pos = new PVector(0, 0);

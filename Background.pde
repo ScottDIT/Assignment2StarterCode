@@ -1,15 +1,17 @@
 class Background extends GameObject{
  PImage img;
-
+ //float bgspeed;
 
   Background() // Constructor
   {
+    //bgspeed = 1.0f;
   }
 
- Background(float w,float h, String imgPath) //Overloaded Constructor
+ Background(float w,float h, float speed, String imgPath) //Overloaded Constructor
 {
    this.w = w;
    this.h = h;
+   this.speed = speed;
    img = loadImage(imgPath);
 }
 
