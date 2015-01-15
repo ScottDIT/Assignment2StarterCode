@@ -6,21 +6,22 @@ class Player extends GameObject
   char left;
   char right;
   char start;
+  char insertcoin;
   char button1;
   char button2;
   int index;
   PImage img;
 
-//-----------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------------
 
   Player()
   {
     pos = new PVector(width / 2, height / 2); //Default position overwritten by setUpPlayerControllers() function
   }
 
-//-----------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------------
 
-  Player(int index, String imgPath, char up, char down, char left, char right, char start, char button1, char button2)
+  Player(int index, String imgPath, char up, char down, char left, char right, char start, char button1, char button2,char insertcoin)
   {
     this(); //Calls the default contructor
     this.index = index; //Set index for each object
@@ -31,10 +32,11 @@ class Player extends GameObject
     this.start = start;
     this.button1 = button1;
     this.button2 = button2;
+    this.insertcoin = insertcoin;
     img = loadImage(imgPath);
   }
 
-//-----------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------------
 
 
   Player(int index, String imgPath, XML xml)
@@ -49,16 +51,21 @@ class Player extends GameObject
       , buttonNameToKey(xml, "start")
       , buttonNameToKey(xml, "button1")
       , buttonNameToKey(xml, "button2")
+      , buttonNameToKey(xml, "insertcoin")
       );
   }
 
-//-----------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------------
 
 
   void update()
   {
     hover(); //Call the hover function to allow the player to hover down slowly
     
+    if (checkKey(insertcoin)) {
+     coins = 1; 
+    }
+
     if (checkKey(up))
     {
       pos.y -= speed;
@@ -85,9 +92,16 @@ class Player extends GameObject
         theta += 0.025;
       }
     }
-    if (checkKey(start))
+    if (checkKey(insertcoin))
     {
-      println("Player " + index + " start");
+      println("Player " + index +  " coins " + coins);
+      //println("Player " + index + " insert coin");
+    }
+    if (checkKey(start) && coins > 0)
+    {
+      coins = 0;
+      println("Player " + index + " coins" + coins);
+      gamestate="";
     }
     if (checkKey(button1))
     {
@@ -99,7 +113,7 @@ class Player extends GameObject
     }
   }
 
-//-----------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------------
 
 
   void hover() { //Hover function
@@ -112,8 +126,8 @@ class Player extends GameObject
       }
     }
   } //End Hover 
-  
-//-----------------------------------------------------------------------------------------------------
+
+  //-----------------------------------------------------------------------------------------------------
 
 
   void display()

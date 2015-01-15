@@ -1,29 +1,26 @@
-/*
-    DIT OOP Assignment 2 Starter Code
- =================================
- 
- Loads player properties from an xml file
- See: https://github.com/skooter500/DT228-OOP 
- */
-
 ArrayList<GameObject> allobjects = new ArrayList<GameObject>(); //Arraylist of game objects
 boolean[] keys = new boolean[526]; //To allow keys pressed at same time
 PVector gravity; //To lower the helicopter when it is in the air
-
+int coins;
+String gamestate;
+PImage readyimg;
 //-----------------------------------------------------------------------------------------------------
 
-boolean sketchFullScreen() {
-  return true; //Send the game into full screen
-}
+//boolean sketchFullScreen() {
+//  return true; //Send the game into full screen
+//}
 
 //-----------------------------------------------------------------------------------------------------
 
 void setup()
 {
-  size(1024,640);
+  gamestate = "ready";
+  coins = 0;
+  size(1024, 640);
   gravity = new PVector(0, .5); //Dont change x, increase(decrease) the helicopter height
   allobjects.add(new Background(width*2, height, 1, "background.jpg")); //Calling backgroud class
   setUpPlayerControllers(); //Call setup player controlles function, Using XML File
+  readyimg=loadImage("background.jpg");
 }
 
 //-----------------------------------------------------------------------------------------------------
@@ -41,6 +38,14 @@ void draw()
       InBounds(eachobject); //Call the inbounds function to keep game objects in the screen
     }
   }
+  
+  
+  
+  
+  if (gamestate=="ready") {
+    image(readyimg,0,0,width,height);
+  }
+  
 } //End draw
 
 //-----------------------------------------------------------------------------------------------------
@@ -105,9 +110,9 @@ void setUpPlayerControllers()
     Player p = new Player(
     i
       , "helicopter_" + (i+1) + ".png" //Helicopter_1 and helicopter_2 will be added
-      , playerXML);
+    , playerXML);
     int y = (i + 1) * gap; //Y position both players will spawn along with the gap created
-    p.pos.x = 100; // Spawn both players at 100 on x axis
+    p.pos.x = -100; // Spawn both players at 100 on x axis
     p.pos.y = y; //Y position declared
     allobjects.add(p); // Add players to screen
   }

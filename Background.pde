@@ -5,7 +5,6 @@ class Background extends GameObject{
 
   Background() // Constructor
   {
-    //bgspeed = 1.0f;
   }
   
 //-----------------------------------------------------------------------------------------------------
