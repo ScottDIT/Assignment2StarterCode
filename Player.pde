@@ -10,18 +10,20 @@ class Player extends GameObject
   char button2;
   int index;
   PImage img;
-  //color colour;
+
+//-----------------------------------------------------------------------------------------------------
 
   Player()
   {
-    pos = new PVector(width / 2, height / 2);
+    pos = new PVector(width / 2, height / 2); //Default position overwritten by setUpPlayerControllers() function
   }
+
+//-----------------------------------------------------------------------------------------------------
 
   Player(int index, String imgPath, char up, char down, char left, char right, char start, char button1, char button2)
   {
-    this();
+    this(); //Calls the default contructor
     this.index = index; //Set index for each object
-    //this.colour = colour;
     this.up = up;
     this.down = down;
     this.left = left;
@@ -32,8 +34,12 @@ class Player extends GameObject
     img = loadImage(imgPath);
   }
 
+//-----------------------------------------------------------------------------------------------------
+
+
   Player(int index, String imgPath, XML xml)
-  {
+  { //Called in the setUpPlayerControllers() function in Assignment2StarterCode class
+    //Then calls the above constructor
     this(index
       , imgPath
       , buttonNameToKey(xml, "up")
@@ -45,6 +51,9 @@ class Player extends GameObject
       , buttonNameToKey(xml, "button2")
       );
   }
+
+//-----------------------------------------------------------------------------------------------------
+
 
   void update()
   {
@@ -90,6 +99,9 @@ class Player extends GameObject
     }
   }
 
+//-----------------------------------------------------------------------------------------------------
+
+
   void hover() { //Hover function
     if (theta!=0) // If it is not equal to zero
     {
@@ -100,11 +112,15 @@ class Player extends GameObject
       }
     }
   } //End Hover 
+  
+//-----------------------------------------------------------------------------------------------------
 
 
   void display()
   {    
-    pushMatrix();
+    //saves the current coordinate system to the stack and popMatrix() restores the prior coordinate system. 
+    //pushMatrix() and popMatrix() are used in conjuction with the other transformation functions and may be embedded to control the scope of the transformations.
+    pushMatrix(); 
     translate(pos.x, pos.y);
     rotate(theta);
     float halfwidth = w/2;

@@ -7,16 +7,26 @@
  */
 
 ArrayList<GameObject> allobjects = new ArrayList<GameObject>(); //Arraylist of game objects
-boolean[] keys = new boolean[526];
-
+boolean[] keys = new boolean[526]; //To allow keys pressed at same time
 PVector gravity; //To lower the helicopter when it is in the air
+
+//-----------------------------------------------------------------------------------------------------
+
+boolean sketchFullScreen() {
+  return true; //Send the game into full screen
+}
+
+//-----------------------------------------------------------------------------------------------------
+
 void setup()
 {
-  size(500, 500);
+  size(1024,640);
   gravity = new PVector(0, .5); //Dont change x, increase(decrease) the helicopter height
-  allobjects.add(new Background(1000, 500, 1, "background.jpg")); //Calling backgroud class
-  setUpPlayerControllers();
+  allobjects.add(new Background(width*2, height, 1, "background.jpg")); //Calling backgroud class
+  setUpPlayerControllers(); //Call setup player controlles function, Using XML File
 }
+
+//-----------------------------------------------------------------------------------------------------
 
 void draw()
 {
@@ -31,7 +41,10 @@ void draw()
       InBounds(eachobject); //Call the inbounds function to keep game objects in the screen
     }
   }
-}
+} //End draw
+
+//-----------------------------------------------------------------------------------------------------
+
 
 void keyPressed()
 {
@@ -43,10 +56,16 @@ void keyReleased()
   keys[keyCode] = false;
 }
 
+//-----------------------------------------------------------------------------------------------------
+
+
 boolean checkKey(char theKey)
 {
   return keys[Character.toUpperCase(theKey)];
 }
+
+//-----------------------------------------------------------------------------------------------------
+
 
 char buttonNameToKey(XML xml, String buttonName)
 {
@@ -71,44 +90,50 @@ char buttonNameToKey(XML xml, String buttonName)
   return value.charAt(0);
 }
 
+//-----------------------------------------------------------------------------------------------------
+
+
 void setUpPlayerControllers()
 {
   XML xml = loadXML("arcade.xml");
   XML[] children = xml.getChildren("player");
-  int gap = width / (children.length + 1);
+  int gap = (height/2) / (children.length + 1);
 
   for (int i = 0; i < children.length; i ++)  
   {
     XML playerXML = children[i];
     Player p = new Player(
     i
-      , "helicopter.png"
+      , "helicopter_" + (i+1) + ".png" //Helicopter_1 and helicopter_2 will be added
       , playerXML);
-    int x = (i + 1) * gap;
-    p.pos.x = x;
-    p.pos.y = 300;
-    allobjects.add(p);
+    int y = (i + 1) * gap; //Y position both players will spawn along with the gap created
+    p.pos.x = 100; // Spawn both players at 100 on x axis
+    p.pos.y = y; //Y position declared
+    allobjects.add(p); // Add players to screen
   }
 }
 
+//-----------------------------------------------------------------------------------------------------
+
+
 void InBounds(GameObject player) 
 {
-  if (player.pos.x <= player.w -30) 
+  if (player.pos.x <= player.w/2) 
   {
-    player.pos.x =  player.w -30;
+    player.pos.x =  player.w/2;
   } else 
-    if (player.pos.x >= width-player.w/2)
+    if (player.pos.x >= width-(player.w/2)-10)
   {
-    player.pos.x = width - player.w/2;
+    player.pos.x = width-(player.w/2)-10;
   }
 
-  if (player.pos.y <= player.h/2) 
+  if (player.pos.y <= player.h/2+10) 
   {
-    player.pos.y =  player.h/2;
+    player.pos.y =  player.h/2+10;
   } else 
-    if (player.pos.y >= 440)
+    if (player.pos.y >= height-(player.h/2)-10)
   {
-    player.pos.y = 440;
+    player.pos.y = height-(player.h/2)-10;
   }
 }
 
