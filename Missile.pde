@@ -11,6 +11,7 @@ class Missile extends GameObject
 
   Missile(String direction, float x, float y, float w, float h, float speed, String imgPath)
   {
+    this.direction = direction;
     this.pos.x = x;
     this.pos.y = y;
     this.w = w;

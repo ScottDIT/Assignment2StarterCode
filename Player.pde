@@ -1,6 +1,5 @@
 class Player extends GameObject
 {  //Declare variables for players
-  //PVector pos;
   char up;
   char down;
   char left;
@@ -12,7 +11,14 @@ class Player extends GameObject
   int index;
   PImage img;
 
+
   boolean started;
+  float firerate = 3.0f;
+  float wait = 0.0f;
+
+  ArrayList<GameObject> missiles = new ArrayList<GameObject>(); //Arraylist of game objects
+
+
   //-----------------------------------------------------------------------------------------------------
 
   Player()
@@ -103,7 +109,7 @@ class Player extends GameObject
     }
 
 
-    if (checkKey(start) && coins > 0)
+    if (checkKey(start) && coins > 0) 
     {
       coins = 0;
       started= true;
@@ -111,7 +117,11 @@ class Player extends GameObject
     }    
     if (checkKey(button1))
     {
-      println("Player " + index + " button 1");
+      if (millis() -wait >= 1000/firerate)
+      {
+        missiles.add( new Missile("right", pos.x, pos.y, 50, 20, 8, "background.jpg") ); //Image for missile
+        wait = millis();
+      }
     }
     if (checkKey(button2))
     {
@@ -150,6 +160,16 @@ class Player extends GameObject
       float halfheight = h/2;
       image(img, -halfwidth, -halfheight, w, h);
       popMatrix();
+
+
+
+
+
+      for (GameObject missile : missiles) // loop through the objects
+      {
+        missile.update();
+        missile.display();
+      }
     }
   }
 }
