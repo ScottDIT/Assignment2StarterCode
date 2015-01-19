@@ -119,7 +119,7 @@ class Player extends GameObject
     {
       if (millis() -wait >= 1000/firerate)
       {
-        missiles.add( new Missile("right", pos.x, pos.y, 50, 20, 8, "background.jpg") ); //Image for missile
+        missiles.add( new Missile("right", pos.x, pos.y, 50, 20, 8, "missile.png") ); //Image for missile
         wait = millis();
       }
     }
