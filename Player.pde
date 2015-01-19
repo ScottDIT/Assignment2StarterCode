@@ -1,5 +1,5 @@
 class Player extends GameObject
-{
+{  //Declare variables for players
   //PVector pos;
   char up;
   char down;
@@ -12,16 +12,21 @@ class Player extends GameObject
   int index;
   PImage img;
 
+  boolean started;
   //-----------------------------------------------------------------------------------------------------
 
   Player()
-  {
+  {  //Set values to players
+    w=100.0f; //Set values to player
+    h=40.0f;
+    speed = 6.0f;
+    started = false;
     pos = new PVector(width / 2, height / 2); //Default position overwritten by setUpPlayerControllers() function
   }
 
   //-----------------------------------------------------------------------------------------------------
 
-  Player(int index, String imgPath, char up, char down, char left, char right, char start, char button1, char button2,char insertcoin)
+  Player(int index, String imgPath, char up, char down, char left, char right, char start, char button1, char button2, char insertcoin)
   {
     this(); //Calls the default contructor
     this.index = index; //Set index for each object
@@ -39,7 +44,7 @@ class Player extends GameObject
   //-----------------------------------------------------------------------------------------------------
 
 
-  Player(int index, String imgPath, XML xml)
+  Player (int index, String imgPath, XML xml)
   { //Called in the setUpPlayerControllers() function in Assignment2StarterCode class
     //Then calls the above constructor
     this(index
@@ -61,48 +66,49 @@ class Player extends GameObject
   void update()
   {
     hover(); //Call the hover function to allow the player to hover down slowly
-    
+
     if (checkKey(insertcoin)) {
-     coins = 1; 
-    }
-
-    if (checkKey(up))
-    {
-      pos.y -= speed;
-    }
-    if (checkKey(down))
-    {
-      pos.y += speed;
-    }
-    if (checkKey(left))
-    {
-      pos.x -= speed;
-
-      if (theta > -0.5)
-      {
-        theta -= 0.025;
-      }
-    }    
-    if (checkKey(right))
-    {
-      pos.x += speed;
-
-      if (theta < 0.5)
-      {
-        theta += 0.025;
-      }
-    }
-    if (checkKey(insertcoin))
-    {
+      coins = 1;
       println("Player " + index +  " coins " + coins);
-      //println("Player " + index + " insert coin");
     }
+
+    if (started)
+    {
+      if (checkKey(up))
+      {
+        pos.y -= speed;
+      }
+      if (checkKey(down))
+      {
+        pos.y += speed;
+      }
+      if (checkKey(left))
+      {
+        pos.x -= speed;
+
+        if (theta > -0.5)
+        {
+          theta -= 0.025;
+        }
+      }    
+      if (checkKey(right))
+      {
+        pos.x += speed;
+
+        if (theta < 0.5)
+        {
+          theta += 0.025;
+        }
+      }
+    }
+
+
     if (checkKey(start) && coins > 0)
     {
       coins = 0;
+      started= true;
       println("Player " + index + " coins" + coins);
-      gamestate="";
-    }
+    }    
     if (checkKey(button1))
     {
       println("Player " + index + " button 1");
@@ -120,9 +126,9 @@ class Player extends GameObject
     if (theta!=0) // If it is not equal to zero
     {
       if (theta < 0) {
-        theta += 0.01; //Increase theta by .1
+        theta += 0.01; //Increase theta by .0
       } else {
-        theta -= 0.01; //Decrease theta by.1
+        theta -= 0.01; //Decrease theta by.0
       }
     }
   } //End Hover 
@@ -132,15 +138,19 @@ class Player extends GameObject
 
   void display()
   {    
-    //saves the current coordinate system to the stack and popMatrix() restores the prior coordinate system. 
-    //pushMatrix() and popMatrix() are used in conjuction with the other transformation functions and may be embedded to control the scope of the transformations.
-    pushMatrix(); 
-    translate(pos.x, pos.y);
-    rotate(theta);
-    float halfwidth = w/2;
-    float halfheight = h/2;
-    image(img, -halfwidth, -halfheight, w, h);
-    popMatrix();
+
+    if (started)
+    {
+      //saves the current coordinate system to the stack and popMatrix() restores the prior coordinate system. 
+      //pushMatrix() and popMatrix() are used in conjuction with the other transformation functions and may be embedded to control the scope of the transformations.
+      pushMatrix(); 
+      translate(pos.x, pos.y);
+      rotate(theta);
+      float halfwidth = w/2;
+      float halfheight = h/2;
+      image(img, -halfwidth, -halfheight, w, h);
+      popMatrix();
+    }
   }
 }
 
