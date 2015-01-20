@@ -18,15 +18,13 @@ class Player extends GameObject
 
   ArrayList<GameObject> missiles = new ArrayList<GameObject>(); //Arraylist of game objects
 
-  
-
   //-----------------------------------------------------------------------------------------------------
 
   Player()
   {  //Set values to players
     w=100.0f; //Set values to player
     h=40.0f;
-    speed = 6.0f;
+    speed = 3.0f;
     started = false;
     
     pos = new PVector(width / 2, height / 2); //Default position overwritten by setUpPlayerControllers() function

@@ -5,11 +5,11 @@ int coins;
 String gamestate;
 PImage readyimg;
 //-----------------------------------------------------------------------------------------------------
-
-//boolean sketchFullScreen() {
-//  return true; //Send the game into full screen
-//}
-
+/*
+boolean sketchFullScreen() {
+ return true; //Send the game into full screen
+ }
+ */
 //-----------------------------------------------------------------------------------------------------
 
 void setup()
@@ -19,6 +19,13 @@ void setup()
   size(1024, 640);
   gravity = new PVector(0, 1); //Dont change x, increase(decrease) the helicopter height
   allobjects.add(new Background(width*2, height, 1, "background.jpg")); //Calling backgroud class
+
+  for (int i = 0; i < 5; i++)
+  {
+    // Helli w, h, speed.
+    allobjects.add(new Helicopter(100, 40, 3));  //Loop through heli and create 5
+  }
+
   setUpPlayerControllers(); //Call setup player controlles function, Using XML File
   readyimg=loadImage("background.jpg");
 }
@@ -48,20 +55,59 @@ void draw()
 
 
   if (gamestate == "running") { //Set gamestate
-    image(readyimg, 0, 0, width, height);//Draw background
+    //image(readyimg, 0, 0, width, height);//Draw background
     //drawInstuctions();
 
-    for (GameObject eachobject : allobjects) // loop through the objects
+    // Player
+    for (int i = 0; i < allobjects.size (); i++)
     {
-
-      if (eachobject instanceof Player) //if the object is a player we can access the player variaibles
+      if (allobjects.get(i) instanceof Player) //if the object is a player we can access the player variaibles
       {
-        eachobject.pos.add(gravity); //Add gravity to players
-        InBounds(eachobject); //Add the Inbounds function
+        allobjects.get(i).pos.add(gravity); //Add gravity to players
+        InBounds(allobjects.get(i)); //Add the Inbounds function
       }
-      eachobject.update();
-      eachobject.display();
+      allobjects.get(i).update();
+      allobjects.get(i).display();
     }
+
+
+    // Helicopter
+    for (int i = 0; i < allobjects.size (); i++)
+    {
+      if (allobjects.get(i) instanceof Helicopter) //if the object is a heli we can access the helo variaibles
+      {
+
+        if (allobjects.get(i).pos.x + allobjects.get(i).w < 0) //Heli's less than x to be removed
+        {
+          allobjects.get(i).alive = false; 
+          // Helli w, h, speed.
+          allobjects.add(new Helicopter(100, 40, 3)); //Calling Heli class and respawn
+        }
+      }
+      if(!allobjects.get(i).alive)
+      {
+        allobjects.remove(allobjects.get(i)); //Remove heli 
+      }
+      allobjects.get(i).update();
+      allobjects.get(i).display();
+    }
+
+
+
+
+    /* another way to loop.
+     for (GameObject eachobject : allobjects) // loop through the objects
+     {
+     
+     if (eachobject instanceof Player) //if the object is a player we can access the player variaibles
+     {
+     eachobject.pos.add(gravity); //Add gravity to players
+     InBounds(eachobject); //Add the Inbounds function
+     }
+     eachobject.update();
+     eachobject.display();
+     }
+     */
   } //End of Gamestate Ready
 } //End draw
 
@@ -175,4 +221,6 @@ void drawInstuctions() {
   text("4) Collect the golden boot to gain an extra life!", width/2, 140);
   text("5) Now you are ready to play the game! Press 'S' to start!", width/2, 160);
 }//End of draw instuctions
+
+//-----------------------------------------------------------------------------------------------------
 

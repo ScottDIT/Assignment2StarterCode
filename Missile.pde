@@ -3,10 +3,15 @@ class Missile extends GameObject
   PImage img;
   String direction;
   PVector velocity;
+  
+  
+  //-----------------------------------------------------------------------------------------------------
 
   Missile()
   {
   }//End constructor
+
+  //-----------------------------------------------------------------------------------------------------
 
 
   Missile(String direction, float x, float y, float w, float h, float speed, float theta, String imgPath)
@@ -21,6 +26,8 @@ class Missile extends GameObject
     this.velocity = new PVector(0, 0);
     img = loadImage(imgPath);
   }//End missile constructor
+
+  //-----------------------------------------------------------------------------------------------------
 
 
   void update()
@@ -48,6 +55,7 @@ class Missile extends GameObject
     }
   }
 
+  //-----------------------------------------------------------------------------------------------------
 
   void display()
   {
