@@ -18,6 +18,7 @@ class Player extends GameObject
 
   ArrayList<GameObject> missiles = new ArrayList<GameObject>(); //Arraylist of game objects
 
+  
 
   //-----------------------------------------------------------------------------------------------------
 
@@ -27,6 +28,7 @@ class Player extends GameObject
     h=40.0f;
     speed = 6.0f;
     started = false;
+    
     pos = new PVector(width / 2, height / 2); //Default position overwritten by setUpPlayerControllers() function
   }
 
@@ -71,7 +73,7 @@ class Player extends GameObject
 
   void update()
   {
-    hover(); //Call the hover function to allow the player to hover down slowly
+    
 
     if (checkKey(insertcoin)) {
       coins = 1;
@@ -118,8 +120,8 @@ class Player extends GameObject
     if (checkKey(button1))
     {
       if (millis() -wait >= 1000/firerate)
-      {
-        missiles.add( new Missile("right", pos.x, pos.y, 50, 20, 8, "missile.png") ); //Image for missile
+      { 
+        missiles.add( new Missile("right", pos.x + 10, pos.y + 10, 30, 15, 8, theta, "missile.png") ); //Missile fire, positions, width height, speed, theta, image
         wait = millis();
       }
     }
@@ -127,6 +129,9 @@ class Player extends GameObject
     {
       println("Player " + index + " butt2");
     }
+    
+    hover(); //Call the hover function to allow the player to hover down slowly
+    
   }
 
   //-----------------------------------------------------------------------------------------------------
@@ -160,9 +165,6 @@ class Player extends GameObject
       float halfheight = h/2;
       image(img, -halfwidth, -halfheight, w, h);
       popMatrix();
-
-
-
 
 
       for (GameObject missile : missiles) // loop through the objects
