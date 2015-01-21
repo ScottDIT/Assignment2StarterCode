@@ -26,7 +26,7 @@ class Player extends GameObject
     h=40.0f;
     speed = 3.0f;
     started = false;
-    
+
     pos = new PVector(width / 2, height / 2); //Default position overwritten by setUpPlayerControllers() function
   }
 
@@ -71,10 +71,11 @@ class Player extends GameObject
 
   void update()
   {
-    
+
 
     if (checkKey(insertcoin)) {
       coins = 1;
+      lives = 3;
       println("Player " + index +  " coins " + coins);
     }
 
@@ -127,9 +128,8 @@ class Player extends GameObject
     {
       println("Player " + index + " butt2");
     }
-    
+
     hover(); //Call the hover function to allow the player to hover down slowly
-    
   }
 
   //-----------------------------------------------------------------------------------------------------
@@ -165,12 +165,27 @@ class Player extends GameObject
       popMatrix();
 
 
-      for (GameObject missile : missiles) // loop through the objects
+
+      for (int i = 0; i < missiles.size (); i++)
       {
-        missile.update();
-        missile.display();
+        if (missiles.get(i) instanceof Missile) 
+        {
+          missiles.get(i).update();
+          missiles.get(i).display();
+          if(!missiles.get(i).alive)
+          {
+            missiles.remove(missiles.get(i));
+          }
+        }
       }
+      /*
+        for (GameObject missile : missiles) // loop through the alive
+       {
+       missile.update();
+       missile.display();
+       }
+       */
     }
-  }
-}
+  }//End display
+}//End class
 

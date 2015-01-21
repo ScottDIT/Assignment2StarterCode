@@ -9,9 +9,10 @@ class Helicopter extends GameObject
     img = loadImage("enemyheli.png");
   }
 
-  Helicopter(float w, float h, float speed)
+  Helicopter(float y, float w, float h, float speed)
   {
     this();
+    this.pos.y = y;
     this.w=w;
     this.h=h;
     this.speed = speed;

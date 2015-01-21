@@ -2,6 +2,7 @@ ArrayList<GameObject> allobjects = new ArrayList<GameObject>(); //Arraylist of g
 boolean[] keys = new boolean[526]; //To allow keys pressed at same time
 PVector gravity; //To lower the helicopter when it is in the air
 int coins;
+int lives;
 String gamestate;
 PImage readyimg;
 //-----------------------------------------------------------------------------------------------------
@@ -12,18 +13,32 @@ boolean sketchFullScreen() {
  */
 //-----------------------------------------------------------------------------------------------------
 
+boolean devMode = true;
+boolean sketchFullScreen() {
+  return ! devMode;
+}
+
+
+
+
 void setup()
 {
   gamestate = "ready";
   coins = 0;
-  size(1024, 640);
+  if (devMode)
+  {
+    size(1024, 640);
+  } else
+  {
+    size(displayWidth, displayHeight);
+  }
   gravity = new PVector(0, 1); //Dont change x, increase(decrease) the helicopter height
   allobjects.add(new Background(width*2, height, 1, "background.jpg")); //Calling backgroud class
 
   for (int i = 0; i < 5; i++)
   {
-    // Helli w, h, speed.
-    allobjects.add(new Helicopter(100, 40, 3));  //Loop through heli and create 5
+    // Helli y, w, h, speed.
+    allobjects.add(new Helicopter(i * 80, 100, 40, 3));  //Loop through enemy heli and create 5
   }
 
   setUpPlayerControllers(); //Call setup player controlles function, Using XML File
@@ -44,7 +59,7 @@ void draw()
       if (eachobject instanceof Player) // If the object is a player we can access the player variables
       {
         Player p = (Player) eachobject; //Cast player as p
-        p.update();
+        p.update(); //Update player to have access to keys
         if (p.started)
         {
           gamestate = "running";
@@ -55,44 +70,55 @@ void draw()
 
 
   if (gamestate == "running") { //Set gamestate
-    //image(readyimg, 0, 0, width, height);//Draw background
-    //drawInstuctions();
 
-    // Player
+    // loop through all objects
     for (int i = 0; i < allobjects.size (); i++)
     {
-      if (allobjects.get(i) instanceof Player) //if the object is a player we can access the player variaibles
+
+      // Player
+      if (allobjects.get(i) instanceof Player) //Check if its a player
       {
+        Player player = (Player) allobjects.get(i); //Cast the gameObject as a player
         allobjects.get(i).pos.add(gravity); //Add gravity to players
         InBounds(allobjects.get(i)); //Add the Inbounds function
-      }
-      allobjects.get(i).update();
-      allobjects.get(i).display();
-    }
 
 
-    // Helicopter
-    for (int i = 0; i < allobjects.size (); i++)
-    {
+        for (int j = 0; j < allobjects.size (); j++ )
+        {
+          if (allobjects.get(j) instanceof Helicopter)
+          {
+            Helicopter helicopter = (Helicopter) allobjects.get(j); //Cast the gameObject as a player
+            MissileCollision(player, helicopter);
+            
+          }//End if
+        }//End loop
+      }//End player
+
+
+
+
+        // Enemy Helicopter
       if (allobjects.get(i) instanceof Helicopter) //if the object is a heli we can access the helo variaibles
       {
 
         if (allobjects.get(i).pos.x + allobjects.get(i).w < 0) //Heli's less than x to be removed
         {
-          allobjects.get(i).alive = false; 
+          allobjects.get(i).alive = false; //Set to false when out of bounds
           // Helli w, h, speed.
-          allobjects.add(new Helicopter(100, 40, 3)); //Calling Heli class and respawn
+          allobjects.add(new Helicopter(allobjects.get(i).pos.y, 100, 40, 3)); //Calling Heli class and respawn
         }
-      }
-      if(!allobjects.get(i).alive)
-      {
-        allobjects.remove(allobjects.get(i)); //Remove heli 
-      }
-      allobjects.get(i).update();
+      }// End helicoper
+
+
+      allobjects.get(i).update(); //Update & display all objects
       allobjects.get(i).display();
-    }
 
-
+      // All objects.
+      if (!allobjects.get(i).alive)
+      {
+        allobjects.remove(allobjects.get(i)); //Remove heli
+      }
+    } // End loop
 
 
     /* another way to loop.
@@ -186,20 +212,20 @@ void setUpPlayerControllers()
 
 void InBounds(GameObject player) 
 {
-  if (player.pos.x <= player.w/2) 
+  if (player.pos.x <= player.w/2) //Left bound
   {
     player.pos.x =  player.w/2;
   } else 
-    if (player.pos.x >= width-(player.w/2)-10)
+    if (player.pos.x >= width-(player.w/2)-10)//Right bound
   {
     player.pos.x = width-(player.w/2)-10;
   }
 
-  if (player.pos.y <= player.h/2+10) 
+  if (player.pos.y <= player.h/2+10) //Top bound
   {
     player.pos.y =  player.h/2+10;
   } else 
-    if (player.pos.y >= height-(player.h/2)-10)
+    if (player.pos.y >= height-(player.h/2)-10)//Bottom bound
   {
     player.pos.y = height-(player.h/2)-10;
   }
@@ -223,4 +249,24 @@ void drawInstuctions() {
 }//End of draw instuctions
 
 //-----------------------------------------------------------------------------------------------------
+
+void MissileCollision(Player p, Helicopter h) { 
+
+
+  for (int i = 0; i < p.missiles.size (); i++)
+  {
+    if (p.missiles.get(i) instanceof Missile) //Cast player as missile
+    {
+      if (p.missiles.get(i).pos.x + p.missiles.get(i).w > h.pos.x &&
+        p.missiles.get(i).pos.x < h.pos.x + h.w &&
+        p.missiles.get(i).pos.y + p.missiles.get(i).h > h.pos.y &&
+        p.missiles.get(i).pos.y < h.pos.y + h.h)
+      {
+        p.missiles.get(i).alive = false; //Set player missiles to false to remove them
+        h.alive = false; //Remove the helicopter from the screen after collision
+        allobjects.add(new Helicopter(h.pos.y, 100, 40, 3));
+      }
+    }//End if
+  }//End for
+}//End missilecollision
 
