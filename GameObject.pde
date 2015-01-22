@@ -5,7 +5,6 @@ class GameObject
   float w, h;
   float theta, speed;
   color colour = color(255);
-
 //-----------------------------------------------------------------------------------------------------
 
   GameObject() //Constructor method

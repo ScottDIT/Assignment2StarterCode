@@ -13,12 +13,10 @@ boolean sketchFullScreen() {
  */
 //-----------------------------------------------------------------------------------------------------
 
-boolean devMode = true;
+boolean devMode = true; //Change to false to enter full screen
 boolean sketchFullScreen() {
   return ! devMode;
 }
-
-
 
 
 void setup()
@@ -80,8 +78,9 @@ void draw()
       {
         Player player = (Player) allobjects.get(i); //Cast the gameObject as a player
         allobjects.get(i).pos.add(gravity); //Add gravity to players
-        InBounds(allobjects.get(i)); //Add the Inbounds function
 
+        InBounds(player);
+        onScreen(player);
 
         for (int j = 0; j < allobjects.size (); j++ )
         {
@@ -89,7 +88,6 @@ void draw()
           {
             Helicopter helicopter = (Helicopter) allobjects.get(j); //Cast the gameObject as a player
             MissileCollision(player, helicopter);
-            
           }//End if
         }//End loop
       }//End player
@@ -119,7 +117,6 @@ void draw()
         allobjects.remove(allobjects.get(i)); //Remove heli
       }
     } // End loop
-
 
     /* another way to loop.
      for (GameObject eachobject : allobjects) // loop through the objects
@@ -261,7 +258,9 @@ void MissileCollision(Player p, Helicopter h) {
         p.missiles.get(i).pos.x < h.pos.x + h.w &&
         p.missiles.get(i).pos.y + p.missiles.get(i).h > h.pos.y &&
         p.missiles.get(i).pos.y < h.pos.y + h.h)
+
       {
+        p.score += 50;
         p.missiles.get(i).alive = false; //Set player missiles to false to remove them
         h.alive = false; //Remove the helicopter from the screen after collision
         allobjects.add(new Helicopter(h.pos.y, 100, 40, 3));
@@ -269,4 +268,39 @@ void MissileCollision(Player p, Helicopter h) {
     }//End if
   }//End for
 }//End missilecollision
+
+//-----------------------------------------------------------------------------------------------------
+
+void onScreen(Player player)
+{
+
+
+  if (player.index == 0) {
+    textSize(13);
+    text("Player 1", 40, 30);
+    text("Lives: " + player.lives, 40, 60);
+    text("Score: " + player.score, 40, 90);
+  }
+
+  if (player.index > 0) {
+    textSize(13);
+    text("Player 2", width -40, 30);
+    text("Lives: " +player.lives, width-40, 60);
+    text("Score: " +player.score, width-40, 90);
+  }
+}
+
+/*
+    textSize(13);
+ text("Player 1", 40, 30);
+ text("Lives: " + p.lives, 40, 60);
+ text("Score: " + p.score, 40, 90);
+ 
+ 
+ textSize(13);
+ text("Player 2", width -40, 30);
+ text("Lives: " +lives, width-40, 60);
+ text("Score: " +p2.score, width-40, 90);
+ */
+//}
 

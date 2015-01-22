@@ -31,19 +31,8 @@ class Background extends GameObject {
 
   void display() {
     image(img, pos.x, pos.y, w, h);
-    onScreen();
   }
 
-  void onScreen()
-  {
-    textSize(13);
-    text("Player 1", 40, 30);
-    text("Lives: " +lives, 40, 60);
-    
-    
-    textSize(13);
-    text("Player 2", width -40, 30);
-    text("Lives: " +lives, width-40, 60);
-  }
+  
 } //End class Background
 
