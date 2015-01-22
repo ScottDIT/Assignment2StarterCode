@@ -77,7 +77,7 @@ void draw()
       if (allobjects.get(i) instanceof Player) //Check if its a player
       {
         Player player = (Player) allobjects.get(i); //Cast the gameObject as a player
-        allobjects.get(i).pos.add(gravity); //Add gravity to players
+        player.pos.add(gravity); //Add gravity to players
 
         InBounds(player);
         onScreen(player);
@@ -88,14 +88,15 @@ void draw()
           {
             Helicopter helicopter = (Helicopter) allobjects.get(j); //Cast the gameObject as a player
             MissileCollision(player, helicopter);
+            PlayerCollision(player, helicopter);
           }//End if
-        }//End loop
-      }//End player
+        }//End player
+      }
 
 
 
 
-        // Enemy Helicopter
+      // Enemy Helicopter
       if (allobjects.get(i) instanceof Helicopter) //if the object is a heli we can access the helo variaibles
       {
 
@@ -271,10 +272,25 @@ void MissileCollision(Player p, Helicopter h) {
 
 //-----------------------------------------------------------------------------------------------------
 
+void PlayerCollision(Player p, Helicopter h) { 
+  // When player collides with helicopter
+
+  if (p.pos.x + p.w > h.pos.x &&
+    p.pos.x < h.pos.x + h.w &&
+    p.pos.y + p.h > h.pos.y &&
+    p.pos.y < h.pos.y + h.h)
+
+  {
+    p.lives -= 1;
+    h.alive = false; //Set player missiles to false to remove them
+    //h.alive = false; //Remove the helicopter from the screen after collision
+    allobjects.add(new Helicopter(h.pos.y, 100, 40, 3));
+  }
+}//End missilecollision
+//-----------------------------------------------------------------------------------------------------
+
 void onScreen(Player player)
 {
-
-
   if (player.index == 0) {
     textSize(13);
     text("Player 1", 40, 30);
@@ -290,17 +306,5 @@ void onScreen(Player player)
   }
 }
 
-/*
-    textSize(13);
- text("Player 1", 40, 30);
- text("Lives: " + p.lives, 40, 60);
- text("Score: " + p.score, 40, 90);
- 
- 
- textSize(13);
- text("Player 2", width -40, 30);
- text("Lives: " +lives, width-40, 60);
- text("Score: " +p2.score, width-40, 90);
- */
-//}
+
 
