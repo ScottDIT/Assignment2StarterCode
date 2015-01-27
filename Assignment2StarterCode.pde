@@ -1,12 +1,13 @@
 ArrayList<GameObject> allobjects = new ArrayList<GameObject>(); //Arraylist of game objects
 boolean[] keys = new boolean[526]; //To allow keys pressed at same time
 PVector gravity; //To lower the helicopter when it is in the air
-//int coins;
 int lives;
 String gamestate;
 PImage readyimg;
 import ddf.minim.*; // Library for audio
-Minim minim;
+Minim minim; //Needed for audio
+AudioPlayer helicopter; //Helicopter sounds
+AudioPlayer collision; //Collsion sounds
 
 //-----------------------------------------------------------------------------------------------------
 /*
@@ -25,8 +26,10 @@ boolean sketchFullScreen() {
 void setup()
 {
   minim = new Minim(this);
+  helicopter = minim.loadFile("helicopter.wav");
+  collision = minim.loadFile("collision.wav");
+
   gamestate = "ready";
-  //coins = 0;
   if (devMode)
   {
     size(1024, 640);
@@ -93,12 +96,15 @@ void draw()
   else
     if (gamestate == "running") { //Set gamestate
 
+    if (!helicopter.isPlaying()) {
+      helicopter.play();
+      helicopter.rewind();
+    }
 
 
     // loop through all objects
     for (int i = 0; i < allobjects.size (); i++)
     {
-
 
 
       // Player
@@ -181,7 +187,8 @@ void draw()
   else
     if (gamestate == "over")
   {
-    
+    image(readyimg, 0, 0, width, height);//Draw background
+
     fill(255);
     textAlign(CENTER);
     textSize(30);
@@ -191,9 +198,8 @@ void draw()
       {
         gamestate = "ready";
       } //End mousepressed
-    }//End mousepressed 
+    }//End mousepressed
   }//End gamestate over
-  
 } //End draw
 
 //-----------------------------------------------------------------------------------------------------
@@ -323,6 +329,8 @@ void MissileCollision(Player p, Helicopter h) {
         p.missiles.get(i).pos.y < h.pos.y + h.h)
 
       {
+        collision.play();
+        collision.rewind();
         p.score += 50;
         p.missiles.get(i).alive = false; //Set player missiles to false to remove them
         h.alive = false; //Remove the helicopter from the screen after collision
@@ -344,6 +352,8 @@ void PlayerCollision(Player p, Helicopter h) {
       p.pos.y < h.pos.y + h.h)
 
     {
+      collision.play();
+      collision.rewind();
       p.lives -= 1;
       h.alive = false; //Set player missiles to false to remove them
       allobjects.add(new Helicopter(h.pos.y, 100, 40, 3));
@@ -370,6 +380,8 @@ void PlayerCollisionJeep(Player p, Jeep j) {
       p.pos.y < j.pos.y + j.h)
 
     {
+      collision.play();
+      collision.rewind();
       p.lives -= 1;
       j.alive = false; //Set player missiles to false to remove them
       allobjects.add(new Jeep(height-100, 100, 40, 3));
@@ -392,6 +404,8 @@ void MissileCollisionJeep(Player p, Jeep j) {
         p.missiles.get(i).pos.y < j.pos.y + j.h)
 
       {
+        collision.play();
+        collision.rewind();
         p.score += 50;
         p.missiles.get(i).alive = false; //Set player missiles to false to remove them
         j.alive = false; //Remove the helicopter from the screen after collision

@@ -13,6 +13,8 @@ class Player extends GameObject
   int coins;
   int score;
   AudioPlayer jump;
+  AudioPlayer missile;
+
   PImage img;
 
 
@@ -20,7 +22,7 @@ class Player extends GameObject
   float firerate = 3.0f;
   float wait = 0.0f;
 
-  ArrayList<GameObject> missiles = new ArrayList<GameObject>(); //Arraylist of game objects
+  ArrayList<GameObject> missiles = new ArrayList<GameObject>(); //Arraylist of  missiles from GameObject
 
   //-----------------------------------------------------------------------------------------------------
 
@@ -34,6 +36,8 @@ class Player extends GameObject
     coins = 0;
     score = 0;
     jump = minim.loadFile("jump.mp3");
+    missile = minim.loadFile("missile.wav");
+
 
     pos = new PVector(width / 2, height / 2); //Default position overwritten by setUpPlayerControllers() function
   }
@@ -133,6 +137,8 @@ class Player extends GameObject
       { 
         missiles.add( new Missile("right", pos.x + 10, pos.y + 10, 30, 15, 8, theta, "missile.png") ); //Missile fire, positions, width height, speed, theta, image
         wait = millis();
+        missile.play();
+        missile.rewind();
       }
     }
     if (checkKey(button2))
