@@ -10,7 +10,9 @@ class Player extends GameObject
   char button2;
   int index;
   int lives;  
+  int coins;
   int score;
+  AudioPlayer jump;
   PImage img;
 
 
@@ -29,7 +31,9 @@ class Player extends GameObject
     speed = 3.0f;
     started = false;
     lives = 0;
+    coins = 0;
     score = 0;
+    jump = minim.loadFile("jump.mp3");
 
     pos = new PVector(width / 2, height / 2); //Default position overwritten by setUpPlayerControllers() function
   }
@@ -78,14 +82,15 @@ class Player extends GameObject
 
 
     if (checkKey(insertcoin)) {
+      jump.play();
+      jump.rewind();
       coins = 1;
       lives = 3;
-      println("Player " + index +  " coins " + coins);
     }
 
     if (started)
     {
-          hover(); //Call the hover function to allow the player to hover down slowly
+      hover(); //Call the hover function to allow the player to hover down slowly
 
       if (checkKey(up))
       {
@@ -186,9 +191,5 @@ class Player extends GameObject
       }
     }
   }//End display
-  
-
- 
-  
 }//End class
 
