@@ -5,7 +5,7 @@ class Jeep extends GameObject
   //-----------------------------------------------------------------------------------------------------
 
   Jeep() {
-    pos.x = random(width,width*4);
+    pos.x = random(width, width*3);
     //pos.y = 600;
     img = loadImage("tank.png");
   }

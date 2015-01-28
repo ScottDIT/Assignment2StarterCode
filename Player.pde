@@ -94,6 +94,7 @@ class Player extends GameObject
 
     if (started)
     {
+      //missileremove();
       hover(); //Call the hover function to allow the player to hover down slowly
 
       if (checkKey(up))
@@ -125,11 +126,12 @@ class Player extends GameObject
     }
 
 
-    if (checkKey(start) && coins > 0) 
+    if (checkKey(start) && coins > 0 && (frameCount % 10) == 0) // framecount needed as life needs to be set at 1 but without framecount the life count goes up too fast and game doesnt end
     {
       coins = 0;
       started= true;
       println("Player " + index + " coins" + coins);
+      Life += 1;
     }    
     if (checkKey(button1))
     {
@@ -187,6 +189,7 @@ class Player extends GameObject
       {
         if (missiles.get(i) instanceof Missile) 
         {
+          missileremove(missiles.get(i));
           missiles.get(i).update();
           missiles.get(i).display();
           if (!missiles.get(i).alive)
@@ -197,5 +200,14 @@ class Player extends GameObject
       }
     }
   }//End display
+
+  //Remove the missile from the screen when it is greater than the x
+  void missileremove(GameObject missile)
+  {
+    if (missile.pos.x > width) //Missiles greater than x to be removed
+        {
+          missile.alive = false; //Set to false when out of bounds
+        }//End if
+  }
 }//End class
 

@@ -1,4 +1,4 @@
-ArrayList<GameObject> allobjects = new ArrayList<GameObject>(); //Arraylist of game objects
+ArrayList<GameObject> allobjects; //Arraylist of game objects
 boolean[] keys = new boolean[526]; //To allow keys pressed at same time
 PVector gravity; //To lower the helicopter when it is in the air
 int lives;
@@ -8,6 +8,8 @@ import ddf.minim.*; // Library for audio
 Minim minim; //Needed for audio
 AudioPlayer helicopter; //Helicopter sounds
 AudioPlayer collision; //Collsion sounds
+int Dead = 0; // For gameover
+int Life = 0;
 
 //-----------------------------------------------------------------------------------------------------
 /*
@@ -25,6 +27,9 @@ boolean sketchFullScreen() {
 
 void setup()
 {
+  Life = 0;
+  Dead = 0;
+  allobjects = new ArrayList<GameObject>();
   minim = new Minim(this);
   helicopter = minim.loadFile("helicopter.wav");
   collision = minim.loadFile("collision.wav");
@@ -46,11 +51,9 @@ void setup()
     allobjects.add(new Helicopter(i * 80, 100, 40, 3));  //Loop through enemy heli and create 5
   }
 
-  //for (int i = 0; i < 3; i++)
-  //{
   // Jeep  y, w, h, speed.
   allobjects.add(new Jeep(height-100, 100, 40, 3));  //Loop through enemy heli and create 5
-  //}
+
 
 
 
@@ -62,6 +65,9 @@ void setup()
 
 void draw()
 {
+  println("Player Playing: " + Life); //For game over
+  println("Player Dead: " + Dead);
+    
 
   if (gamestate == "ready") {//Set gamestate
     image(readyimg, 0, 0, width, height);//Draw background
@@ -77,12 +83,12 @@ void draw()
         if (p.index == 0)
         {
           fill(255);
-          text("Player 1 coins " + p.coins, width/2 - 200, height / 2);
+          text("Player 1 inserted coin " + p.coins, width/2 - 200, height / 2);
         } else 
           if (p.index == 1)
         {
           fill(255);
-          text("Player 2 inserted coin " + p.coins, width / 2, height / 2);
+          text("Player 2 inserted coin " + p.coins, width / 2 + 200, height / 2);
         }
 
         if (p.started)
@@ -115,6 +121,8 @@ void draw()
 
         InBounds(player);
         onScreen(player);
+        GameOverCheck(player); // Remove the player from the screen if lives <=0
+
 
         for (int j = 0; j < allobjects.size (); j++ )
         {
@@ -126,6 +134,7 @@ void draw()
               MissileCollision(player, helicopter);
               PlayerCollision(player, helicopter);
               missileHitsPlayer(player, helicopter);
+              
             }
           }//End if
         }//End loop
@@ -136,18 +145,19 @@ void draw()
         {
           if (allobjects.get(k) instanceof Jeep)
           {
-            Jeep jeep = (Jeep) allobjects.get(k);
-            MissileCollisionJeep(player, jeep); //Add the functions for the jeep
-            PlayerCollisionJeep(player, jeep);
+            if (player.started) { // Needed for the jeep spawning over and over, Error's without
+              Jeep jeep = (Jeep) allobjects.get(k);
+              MissileCollisionJeep(player, jeep); //Add the functions for the jeep
+              PlayerCollisionJeep(player, jeep);
 
 
-            if (jeep.pos.x + jeep.w < 0) //Jeep's less than x to be removed
-            {
-              player.score -= 20;
-              jeep.alive = false; //Set to false when out of bounds
+              if (jeep.pos.x + jeep.w <= 0) //Jeep's less than x to be removed
+              {
+                player.score -= 20;
+                jeep.alive = false; //Set to false when out of bounds
 
-              // Jeep y, w, h, speed.
-              allobjects.add(new Jeep(height-100, 100, 40, 3));
+                allobjects.add(new Jeep(height-100, 100, 40, 4)); // Jeep y, w, h, speed.
+              }
             }//End if
           }//End if
         }//End loop
@@ -177,9 +187,16 @@ void draw()
       // All objects.
       if (!allobjects.get(i).alive)
       {
-        allobjects.remove(allobjects.get(i)); //Remove Jeep
+        allobjects.remove(allobjects.get(i)); //For all objects
       }
     } // End loop
+
+
+    //For game over
+    if (Dead == Life) // Game wont end until both players are dead
+    {
+      gamestate = "over";
+    }
   } //End of Gamestate running
 
 
@@ -187,7 +204,8 @@ void draw()
   else
     if (gamestate == "over")
   {
-    image(readyimg, 0, 0, width, height);//Draw background
+   setup();
+    //image(readyimg, 0, 0, width, height);//Draw background
 
     fill(255);
     textAlign(CENTER);
@@ -311,7 +329,8 @@ void drawInstuctions() {
   text("2) Player 1 the number '1' will insert a coin and 'Q' will start the game.", width/2, 100);
   text("3) Player 2 can insert a coin by pressing '9' and '0' to start the game", width/2, 120);
   text("4) The aim of the game is to destroy the enemy helicopters before they reach you", width/2, 140);
-  text("5) Now you are ready to play the game!", width/2, 160);
+  text("5) Beware of the tanks, If they reach they pass you your score will decrease", width/2, 160);
+  text("6) Now you are ready to play the game!", width/2, 200);
 }//End of draw instuctions
 
 //-----------------------------------------------------------------------------------------------------
@@ -357,13 +376,6 @@ void PlayerCollision(Player p, Helicopter h) {
       p.lives -= 1;
       h.alive = false; //Set player missiles to false to remove them
       allobjects.add(new Helicopter(h.pos.y, 100, 40, 3));
-      if (p.index == 0 && p.lives <=0) {
-        p.alive = false;
-        gamestate = "over";
-      } else 
-        if (p.index == 1 && p.lives <=0) {
-        p.alive = false;
-      }
     }
   }
 }//End PlayerCollision
@@ -407,7 +419,7 @@ void MissileCollisionJeep(Player p, Jeep j) {
         collision.play();
         collision.rewind();
         p.score += 50;
-        p.missiles.get(i).alive = false; //Set player missiles to false to remove them
+        p.missiles.get(i).alive = false; //Set player missiles to false to remove them after collision
         j.alive = false; //Remove the helicopter from the screen after collision
         allobjects.add(new Jeep(height-100, 100, 40, 3));
       }
@@ -442,6 +454,13 @@ void onScreen(Player player)
     text("Lives: " + player.lives, 40, 60);
     text("Score: " + player.score, 40, 90);
   }
+  
+   else
+    if (player.index == 0 && !player.started)
+  {
+    text("Player 1", 40, 30);
+    text("Insert coin to continue " + player.coins, 90, 60);
+  }
 
   if (player.index > 0 && player.started) {
     textSize(13);
@@ -449,12 +468,29 @@ void onScreen(Player player)
     text("Lives: " +player.lives, width-40, 60);
     text("Score: " +player.score, width-40, 90);
   }
+  else
+    if (player.index == 1 && !player.started)
+  {
+    text("Player 2", width - 90, 30);
+    text("Insert coin to continue " + player.coins, width - 90, 60);
+  }
 }
 
 //-----------------------------------------------------------------------------------------------------
 
-
+void GameOverCheck(Player p)
+{
+  if (p.started) {
+    if (p.lives <=0)
+    {
+      Dead +=1;
+      p.started = false;
+    }
+  }
+}//End gameovercheck
 
 
 //-----------------------------------------------------------------------------------------------------
+
+
 
